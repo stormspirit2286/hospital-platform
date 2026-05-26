@@ -126,6 +126,27 @@ Current status:
 - Redis reactive dependency exists.
 - Security/OAuth2 Resource Server dependencies exist.
 - Config Server import added.
+- Correlation ID global filter implemented.
+- JWT validation implemented with Spring Security WebFlux Resource Server.
+- Gateway validates HS256 access tokens offline using the same issuer/secret contract as auth-service.
+- Public endpoints:
+  - `POST /api/auth/login`
+  - `POST /api/auth/refresh`
+  - `GET /actuator/health`
+  - `GET /actuator/info`
+- Protected endpoints:
+  - `/api/auth/logout`
+  - `/api/auth/me`
+  - `/api/patients/**`
+  - `/api/appointments/**`
+  - `/api/departments/**`
+  - `/api/doctors/**`
+- Unknown routes are denied by default.
+- Authenticated requests forward trusted internal identity headers:
+  - `X-User-Id`
+  - `X-User-Email`
+  - `X-User-Roles`
+- Client-provided identity headers are stripped first to prevent spoofing.
 - Initial routes exist:
   - `/api/auth/** -> auth-service`
   - `/api/patients/** -> patient-service`
@@ -156,9 +177,10 @@ spring:
 
 Next:
 
-- Add correlation id filter.
-- Add temporary permissive security config while bootstrapping.
-- Later add JWT validation and user header forwarding.
+- Start `config-service`, `discovery-service`, `auth-service`, then `api-gateway`.
+- Test login through gateway and call protected endpoints through gateway only.
+- Move `auth.jwt.secret` out of local YAML into Config Server or environment/secrets before production.
+- Add role-based authorization rules after core service ownership rules are clear.
 
 ### auth-service
 
@@ -198,6 +220,35 @@ roles seed data inserted
 auth-service registered with Eureka successfully
 ```
 
+Auth API status:
+
+```text
+POST /api/auth/login    implemented
+POST /api/auth/refresh  implemented
+POST /api/auth/logout   implemented
+GET  /api/auth/me       implemented
+```
+
+Security behavior:
+
+```text
+/api/auth/login, /api/auth/refresh, /api/auth/logout are public.
+/api/auth/me requires Bearer access token.
+Access token is JWT HS256.
+Refresh token is random opaque token.
+Only refresh token hash is stored in PostgreSQL.
+Refresh rotates token: old refresh token is revoked and a new one is issued.
+Logout revokes the provided refresh token.
+```
+
+Local test user:
+
+```text
+email:    admin@hospital.local
+password: Admin@12345
+role:     ADMIN
+```
+
 Created tables:
 
 ```text
@@ -221,6 +272,7 @@ Current auth Liquibase files:
 db/changelog/db.changelog-master.yaml
 db/changelog/changes/001-create-auth-tables.sql
 db/changelog/changes/002-seed-roles.sql
+db/changelog/changes/003-seed-local-admin.sql
 ```
 
 Migration rule:
@@ -540,8 +592,8 @@ Run services in this order:
 1. config-service      -> http://localhost:8888
 2. discovery-service   -> http://localhost:8761
 3. auth-service        -> http://localhost:8081
-4. patient-service     -> http://localhost:8082
-5. api-gateway         -> http://localhost:8080
+4. api-gateway         -> http://localhost:8080
+5. patient-service     -> http://localhost:8082 later, after datasource/Liquibase is added
 ```
 
 Why gateway last:
@@ -553,35 +605,75 @@ Why gateway last:
 
 ## Next Immediate Checklist
 
-### Step 1 - Verify boot sequence
+### Step 1 - Verify current boot sequence
 
 - Start `config-service`.
 - Start `discovery-service`.
 - Open `http://localhost:8761`.
 - Start `auth-service`.
-- Start `patient-service`.
-- Confirm both services appear in Eureka dashboard.
 - Start `api-gateway`.
+- Confirm `AUTH-SERVICE` and `API-GATEWAY` appear in Eureka dashboard.
 
-### Step 2 - Add temporary health endpoints if needed
+### Step 2 - Verify api-gateway
 
-If a service has no controller yet, use Actuator:
+Check gateway health:
 
 ```text
-/actuator/health
+GET http://localhost:8080/actuator/health
 ```
 
-Add this later if needed:
+Check registered gateway routes:
 
-```yaml
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info
+```text
+GET http://localhost:8080/actuator/gateway/routes
 ```
 
-### Step 3 - patient-service first real code
+Expected explicit routes:
+
+```text
+/api/auth/**                                -> lb://auth-service
+/api/patients/**                            -> lb://patient-service
+/api/appointments/**,/api/departments/**,
+/api/doctors/**                             -> lb://appointment-service
+```
+
+Current route test:
+
+```text
+GET http://localhost:8080/api/auth/not-found
+```
+
+Expected result for now:
+
+```text
+401 Unauthorized from auth-service
+X-Correlation-Id response header exists
+```
+
+The `401` is expected because `auth-service` still has default Spring Security and no public auth controller yet.
+
+### Step 3 - auth-service first real API
+
+Minimal auth API has been implemented:
+
+```text
+POST /api/auth/login
+POST /api/auth/refresh
+POST /api/auth/logout
+GET  /api/auth/me
+```
+
+Next auth-service hardening items:
+
+```text
+1. Move auth.jwt.secret out of application.yaml into config-service/env/secret manager.
+2. Decide whether production should use RS256 instead of HS256.
+3. Add gateway JWT validation using the same token contract.
+4. Add gateway internal headers: X-User-Id, X-User-Role.
+5. Add user management APIs later if needed.
+```
+
+### Step 4 - patient-service first real code
 
 Create packages:
 
@@ -605,7 +697,7 @@ POST /api/patients
 GET  /api/patients/{id}
 ```
 
-### Step 4 - Liquibase first migration
+### Step 5 - patient-service Liquibase first migration
 
 Create:
 
@@ -620,9 +712,9 @@ First table:
 patients
 ```
 
-### Step 5 - Database setup
+### Step 6 - Database setup
 
-Create local PostgreSQL databases:
+Local PostgreSQL databases are created by Docker init script on first volume initialization:
 
 ```sql
 CREATE DATABASE hospital_auth;
@@ -640,16 +732,17 @@ CREATE DATABASE hospital_reporting;
 ## Known Gaps
 
 - No root parent `pom.xml` yet. Current setup is independent Maven modules.
-- No Docker Compose yet.
+- Docker Compose exists for PostgreSQL, Redis, and Kafka.
 - No actual business code yet.
-- No Liquibase changelog files yet.
-- No database connection config yet.
-- `auth-service` startup currently fails until datasource/Liquibase config is added.
+- `auth-service` has Liquibase SQL migrations and starts successfully.
+- `auth-service` has no login/refresh/logout/me API yet.
+- `auth-service` still uses default Spring Security behavior, so gateway-routed auth requests currently return `401`.
 - `patient-service` and `appointment-service` will also fail at runtime until datasource/Liquibase config is added.
 - Kafka broker config is not added yet.
 - Redis connection config is not added yet.
-- No gateway security filter yet.
-- No correlation id filter yet.
+- `api-gateway` has temporary permissive WebFlux security.
+- `api-gateway` has correlation id request/response forwarding and basic request logging.
+- `api-gateway` uses Spring Cloud Gateway 5 config prefix: `spring.cloud.gateway.server.webflux`.
 - No common response/error format yet.
 - No MapStruct mapper classes yet because entity/DTO classes do not exist.
 

@@ -1,11 +1,7 @@
-server:
-  port: 8081
-
 spring:
-  application:
-    name: auth-service
-  config:
-    import: "optional:configserver:http://localhost:8888"
+  cloud:
+    config:
+      enabled: false
   datasource:
     url: jdbc:postgresql://localhost:5432/hospital_auth
     username: hospital
@@ -19,19 +15,12 @@ spring:
 
 eureka:
   client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info
+    enabled: false
 
 auth:
   jwt:
-    issuer: hospital-auth-service
-    secret: "local-dev-secret-change-me-local-dev-secret-change-me"
+    issuer: hospital-auth-service-test
+    secret: "local-test-secret-change-me-local-test-secret-change-me"
     access-token-ttl-minutes: 15
   refresh-token:
     ttl-days: 30

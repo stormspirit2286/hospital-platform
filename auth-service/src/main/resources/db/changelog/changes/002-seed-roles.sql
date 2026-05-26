@@ -7,4 +7,5 @@ INSERT INTO roles (code, name) VALUES
     ('DOCTOR', 'Doctor'),
     ('RECEPTIONIST', 'Receptionist'),
     ('BILLING_STAFF', 'Billing Staff'),
-    ('PHARMACIST', 'Pharmacist');
+    ('PHARMACIST', 'Pharmacist')
+ON CONFLICT (code) DO NOTHING;

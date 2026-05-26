@@ -1,0 +1,15 @@
+spring:
+  cloud:
+    config:
+      enabled: false
+    discovery:
+      enabled: false
+
+eureka:
+  client:
+    enabled: false
+
+auth:
+  jwt:
+    issuer: hospital-auth-service
+    secret: "local-dev-secret-change-me-local-dev-secret-change-me"
