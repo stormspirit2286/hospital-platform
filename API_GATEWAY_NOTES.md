@@ -459,3 +459,89 @@ Buoc tiep theo nen lam la `auth-service`:
 7. Cau hinh public routes cho /api/auth/login va /api/auth/refresh.
 8. Chot JWT claims contract cho gateway dung sau nay.
 ```
+
+---
+
+## 10. Smoke Test End-To-End (2026-05-26)
+
+Muc tieu:
+
+```text
+Verify chain config-service -> discovery-service -> auth-service -> api-gateway hoat dong.
+Test cac flow auth chinh qua gateway: login, /me, refresh + rotation, logout, error cases.
+```
+
+### 10.1 Stack Run Order
+
+```text
+config-service     :8888  UP
+discovery-service  :8761  UP
+auth-service       :8081  UP, registered on Eureka
+api-gateway        :8080  UP, registered on Eureka
+```
+
+Eureka apps thay duoc:
+
+```text
+API-GATEWAY    192.168.x.x:api-gateway:8080   UP
+AUTH-SERVICE   192.168.x.x:auth-service:8081  UP
+```
+
+### 10.2 Test Users (seed qua Liquibase)
+
+File migration moi: `auth-service/src/main/resources/db/changelog/changes/004-seed-test-users.sql`.
+
+Password duoc hash bang BCrypt rounds=10 va seed vao bang `users`, role gan vao `user_roles`.
+
+```text
+admin@hospital.local       Admin@12345       ADMIN
+doctor1@hospital.local     Doctor@12345      DOCTOR
+patient1@hospital.local    Patient@12345     PATIENT
+reception1@hospital.local  Reception@12345   RECEPTIONIST
+```
+
+Tat ca request smoke test goi qua gateway `http://localhost:8080`, KHONG goi truc tiep auth-service.
+
+### 10.3 Ket Qua Tung Test Case
+
+| # | Kich Ban                                                  | Endpoint                            | Ky Vong                       | Thuc Te |
+|---|-----------------------------------------------------------|-------------------------------------|-------------------------------|---------|
+| 1 | Login admin                                               | POST /api/auth/login                | 200 + accessToken + refreshToken + roles=[ADMIN]       | OK |
+| 2 | Login doctor1                                             | POST /api/auth/login                | 200 + roles=[DOCTOR]          | OK |
+| 3 | Login patient1                                            | POST /api/auth/login                | 200 + roles=[PATIENT]         | OK |
+| 4 | Login reception1                                          | POST /api/auth/login                | 200 + roles=[RECEPTIONIST]    | OK |
+| 5 | GET /me voi access token hop le                           | GET  /api/auth/me                   | 200 + user JSON               | OK |
+| 6 | GET /me KHONG co token                                    | GET  /api/auth/me                   | 401                           | OK |
+| 7 | GET /me voi token rac                                     | GET  /api/auth/me                   | 401                           | OK |
+| 8 | Login sai password                                        | POST /api/auth/login                | 401 INVALID_CREDENTIALS       | OK |
+| 9 | Refresh -> cap moi va rotate                              | POST /api/auth/refresh              | 200, refresh token moi != cu  | OK |
+| 10| Reuse refresh token cu sau khi rotate                     | POST /api/auth/refresh              | 401 INVALID_REFRESH_TOKEN     | OK |
+| 11| Logout (Bearer access + refresh body)                     | POST /api/auth/logout               | 200 Logged out successfully   | OK |
+| 12| Refresh lai sau khi logout                                | POST /api/auth/refresh              | 401 INVALID_REFRESH_TOKEN     | OK |
+| 13| Goi route protected khong token                           | GET  /api/patients/me               | 401                           | OK |
+| 14| Goi route khong dinh nghia                                | GET  /api/unknown                   | 401 (deny by default)         | OK |
+| 15| Forward X-Correlation-Id tren routed response             | POST /api/auth/login + header       | echo lai dung gia tri client gui | OK |
+
+Luu y test case 11: `/api/auth/logout` o gateway la PROTECTED route, nen phai gui ca `Authorization: Bearer <accessToken>` lan refresh token trong body. Goi logout chi voi body se bi gateway tra 401.
+
+Luu y test case 15: `beforeCommit` cua `CorrelationIdFilter` apply tren request co route forward. Endpoint actuator/health duoc serve truc tiep boi gateway nen response co the khong co header `X-Correlation-Id`; voi cac route forward thuc su (vi du `/api/auth/login`) header duoc echo lai dung.
+
+### 10.4 Ket Luan
+
+```text
+config-service, discovery-service, auth-service, api-gateway: san sang cho giai doan business service.
+JWT HS256 issuer=hospital-auth-service: gateway verify offline OK.
+Refresh token opaque + SHA-256 hash + rotation + revoke-on-logout: hoat dong dung.
+Identity forward (X-User-Id, X-User-Email, X-User-Roles) duoc tin cay vi gateway sanitize header truoc khi set lai.
+```
+
+Phan con thieu (theo dau cho cac buoc sau):
+
+```text
+1. Rate limit /api/auth/login va /api/auth/refresh qua Redis (chong brute force).
+2. CorsFilter cho frontend.
+3. ErrorHandlingFilter chuan hoa body loi tai gateway (4xx/5xx tu downstream).
+4. Coarse-grained authorization theo role tai gateway (ADMIN/DOCTOR/PATIENT...).
+5. auth-service: enforce issuer trong JwtDecoder, handle UUID parse exception trong /me.
+6. Dua secret va DB credentials ra config server hoac env vars cho ngoai moi truong local.
+```

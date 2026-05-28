@@ -56,7 +56,6 @@ public class Patient extends BaseEntity {
     @Builder.Default
     private List<EmergencyContact> emergencyContacts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<PatientInsurance> insurances = new ArrayList<>();
+    @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private PatientInsurance insurance;
 }

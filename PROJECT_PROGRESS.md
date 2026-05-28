@@ -2,7 +2,7 @@
 
 ## Snapshot
 
-Date: 2026-05-25
+Date: 2026-05-28
 
 Project root:
 
@@ -317,13 +317,111 @@ Current status:
 - Lombok exists.
 - MapStruct dependency and annotation processor added.
 - `lombok-mapstruct-binding` annotation processor added.
+- `spring-boot-starter-validation` added (Jakarta Bean Validation).
+- Package structure created: `controller`, `service`, `repository`, `entity`, `entity/enums`, `dto/request`, `dto/response/common`, `mapper`, `exception`, `config`.
 
-Next:
+Domain decisions (chốt ngày 2026-05-28):
 
-- Create package structure.
-- Create patient entity/request/response/mapper.
-- Create first Liquibase changelog.
-- Create CRUD APIs.
+```text
+- Patient <-> PatientInsurance:        1-1 (BHYT only, no life/voluntary insurance)
+- Patient <-> EmergencyContact:        1-N (max 2 contacts, enforced at service layer)
+- PatientInsurance.card_number:        UNIQUE, fixed 15 chars (2 letters + 13 digits)
+- Insurance/Contact creation:          OPTIONAL on patient creation
+- patient.status:                      server-managed, not exposed in request DTO
+```
+
+JPA / DB design notes:
+
+```text
+- PatientInsurance is owning side (holds patient_id FK).
+- Patient is inverse side (mappedBy = "patient").
+- All associations use FetchType.LAZY by default.
+- JOIN FETCH or @EntityGraph to be used when listing patients with insurance.
+- @Enumerated(EnumType.STRING) used for all enums (never ORDINAL).
+```
+
+Entities created:
+
+```text
+entity/BaseEntity.java              (createdAt/updatedAt, auditing)
+entity/Patient.java                 (1-1 insurance, 1-N emergencyContacts)
+entity/PatientInsurance.java        (BHYT VN fields)
+entity/EmergencyContact.java
+entity/enums/InsuranceStatus.java   (ACTIVE/EXPIRED/SUSPENDED/INVALID)
+entity/enums/BenefitRate.java       (RATE_80/RATE_95/RATE_100 + fromPercent)
+```
+
+DTO request created:
+
+```text
+dto/request/PatientRequest.java            (full Bean Validation, @Valid nested)
+dto/request/EmergencyContactRequest.java   (VN phone pattern, size limits)
+dto/request/InsuranceRequest.java          (BHYT card pattern ^[A-Z]{2}[0-9]{13}$)
+```
+
+Common response wrapper created:
+
+```text
+dto/response/common/ApiResponse.java   (generic <T>, success/error factories,
+                                        also accepts ResponseCode)
+dto/response/common/ApiError.java      (per-field error: field/code/message/rejectedValue)
+dto/response/common/ResponseCode.java  (enum: HttpStatus + code + default message,
+                                        covers SUCCESS/CREATED/VALIDATION_FAILED/
+                                        PATIENT_NOT_FOUND/DUPLICATE_PHONE etc.)
+```
+
+Liquibase migrations (auto-loaded via includeAll):
+
+```text
+001-create-patient-tables.sql           (initial patients/insurances/contacts tables)
+002-make-insurance-one-to-one.sql       (UNIQUE constraint on patient_insurances.patient_id)
+003-refactor-insurance-fields.sql       (drop provider_name/policy_number,
+                                         add card_number/participant_type/
+                                         initial_facility_code/benefit_rate/continuous_from,
+                                         NOT NULL + UNIQUE on card_number + index)
+```
+
+Validation rules applied in PatientRequest:
+
+```text
+firstName, lastName, phone, dateOfBirth   -> required
+email                                     -> optional but must be valid email format
+gender, address, city                     -> optional
+phone                                     -> VN pattern ^(0|\+84)[0-9]{9,10}$
+dateOfBirth                               -> @Past
+emergencyContacts                         -> @Valid + @Size(max = 2)
+insurance                                 -> @Valid
+All string fields                         -> @Size(max = X) matching DB column length
+```
+
+Next (afternoon session, planned order):
+
+```text
+1. dto/response/PatientResponse + InsuranceResponse + EmergencyContactResponse
+2. exception/ (BusinessException, PatientNotFoundException, ...)
+3. mapper/PatientMapper (MapStruct, entity <-> dto)
+4. service/PatientService (interface)
+5. service/impl/PatientServiceImpl (logic, validate max 2 contacts, etc.)
+6. exception/GlobalExceptionHandler (@RestControllerAdvice -> ApiResponse.error)
+7. controller/PatientController (POST/GET endpoints, returns ApiResponse<T>)
+```
+
+Senior notes recorded during morning session:
+
+```text
+- ResponseCode is server-side template, ApiResponse is wire format.
+  Intentional duplication of code/message/status is a feature, not a bug
+  (allows i18n override, decouples API contract from internal enum).
+- Bean Validation cross-field rules (validFrom < validTo) handled at service layer
+  for now; can be promoted to custom @ValidDateRange later.
+- relationship/participantType kept as String for now; convert to enum once
+  business value set stabilizes.
+- N+1 query risk is accepted in learning phase; mitigation via JOIN FETCH /
+  @EntityGraph when needed. SQL logging enabled in application.yaml.
+- Single PatientRepository only (Aggregate Root pattern). No separate
+  InsuranceRepository / EmergencyContactRepository until a real query-by-child
+  use case shows up.
+```
 
 ### appointment-service
 
