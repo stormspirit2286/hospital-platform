@@ -2,10 +2,12 @@ package com.duy.hospital.patientservice.service.impl;
 
 import com.duy.hospital.patientservice.dto.request.PatientRequest;
 import com.duy.hospital.patientservice.dto.response.PatientResponse;
+import com.duy.hospital.patientservice.dto.response.ResponseCode;
 import com.duy.hospital.patientservice.entity.EmergencyContact;
 import com.duy.hospital.patientservice.entity.Patient;
 import com.duy.hospital.patientservice.entity.PatientInsurance;
 import com.duy.hospital.patientservice.entity.enums.InsuranceStatus;
+import com.duy.hospital.patientservice.exception.AppException;
 import com.duy.hospital.patientservice.mapper.PatientMapper;
 import com.duy.hospital.patientservice.repository.PatientRepository;
 import com.duy.hospital.patientservice.service.PatientService;
@@ -61,8 +63,11 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PatientResponse getPatientById(UUID patientId) {
-        return null;
+        Patient patient = patientRepository.findByPatientId(patientId)
+                .orElseThrow(() -> new AppException(ResponseCode.PATIENT_NOT_FOUND));
+        return patientMapper.toResponse(patient);
     }
 
     @Override

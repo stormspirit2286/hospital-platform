@@ -31,6 +31,8 @@ public class GlobalExceptionHandler {
         List<ApiError> errors = ex.getBindingResult().getFieldErrors().stream()
                 .map(this::toApiError)
                 .toList();
+        List<String> failedFields = errors.stream().map(ApiError::getField).toList();
+        log.warn("Validation failed: {} error(s) on fields {}", errors.size(), failedFields);
         ResponseCode rc = ResponseCode.VALIDATION_FAILED;
         return ResponseEntity
                 .status(rc.getStatus())
