@@ -1,4 +1,4 @@
-package com.duy.hospital.patientservice.dto.response.common;
+package com.duy.hospital.patientservice.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

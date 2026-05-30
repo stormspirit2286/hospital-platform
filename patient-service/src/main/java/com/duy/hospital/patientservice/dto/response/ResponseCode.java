@@ -1,4 +1,4 @@
-package com.duy.hospital.patientservice.dto.response.common;
+package com.duy.hospital.patientservice.dto.response;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
