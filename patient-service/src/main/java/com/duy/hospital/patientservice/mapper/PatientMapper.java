@@ -6,6 +6,7 @@ import com.duy.hospital.patientservice.dto.request.PatientRequest;
 import com.duy.hospital.patientservice.dto.response.EmergencyContactResponse;
 import com.duy.hospital.patientservice.dto.response.InsuranceResponse;
 import com.duy.hospital.patientservice.dto.response.PatientResponse;
+import com.duy.hospital.patientservice.dto.response.PatientSummaryResponse;
 import com.duy.hospital.patientservice.entity.EmergencyContact;
 import com.duy.hospital.patientservice.entity.Patient;
 import com.duy.hospital.patientservice.entity.PatientInsurance;
@@ -41,4 +42,5 @@ public interface PatientMapper {
     @Mapping(target = "contactId", ignore = true)
     @Mapping(target = "patient", ignore = true)
     EmergencyContact toEntity(EmergencyContactRequest request);
+
 }

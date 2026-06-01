@@ -1,140 +1,75 @@
-/opt/homebrew/opt/java/libexec/openjdk.jdk/Contents/Home/bin/java -XX:TieredStopAtLevel=1 -Dspring.output.ansi.enabled=always -Dcom.sun.management.jmxremote -Dspring.jmx.enabled=true -Dspring.liveBeansView.mbeanDomain -Dspring.application.admin.enabled=true -Dmanagement.endpoints.jmx.exposure.include=* -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=55363 -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -classpath /Users/nguyenvanduy/Desktop/hospital-platform/patient-service/target/classes:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-starter-actuator/4.0.6/spring-boot-starter-actuator-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-starter/4.0.6/spring-boot-starter-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-starter-logging/4.0.6/spring-boot-starter-logging-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/ch/qos/logback/logback-classic/1.5.32/logback-classic-1.5.32.jar:/Users/nguyenvanduy/.m2/repository/ch/qos/logback/logback-core/1.5.32/logback-core-1.5.32.jar:/Users/nguyenvanduy/.m2/repository/org/apache/logging/log4j/log4j-to-slf4j/2.25.4/log4j-to-slf4j-2.25.4.jar:/Users/nguyenvanduy/.m2/repository/org/apache/logging/log4j/log4j-api/2.25.4/log4j-api-2.25.4.jar:/Users/nguyenvanduy/.m2/repository/org/slf4j/jul-to-slf4j/2.0.17/jul-to-slf4j-2.0.17.jar:/Users/nguyenvanduy/.m2/repository/jakarta/annotation/jakarta.annotation-api/3.0.0/jakarta.annotation-api-3.0.0.jar:/Users/nguyenvanduy/.m2/repository/org/yaml/snakeyaml/2.5/snakeyaml-2.5.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-starter-micrometer-metrics/4.0.6/spring-boot-starter-micrometer-metrics-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-micrometer-metrics/4.0.6/spring-boot-micrometer-metrics-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-micrometer-observation/4.0.6/spring-boot-micrometer-observation-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-actuator-autoconfigure/4.0.6/spring-boot-actuator-autoconfigure-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-actuator/4.0.6/spring-boot-actuator-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-health/4.0.6/spring-boot-health-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/io/micrometer/micrometer-observation/1.16.5/micrometer-observation-1.16.5.jar:/Users/nguyenvanduy/.m2/repository/org/jspecify/jspecify/1.0.0/jspecify-1.0.0.jar:/Users/nguyenvanduy/.m2/repository/io/micrometer/micrometer-commons/1.16.5/micrometer-commons-1.16.5.jar:/Users/nguyenvanduy/.m2/repository/io/micrometer/micrometer-jakarta9/1.16.5/micrometer-jakarta9-1.16.5.jar:/Users/nguyenvanduy/.m2/repository/io/micrometer/micrometer-core/1.16.5/micrometer-core-1.16.5.jar:/Users/nguyenvanduy/.m2/repository/org/hdrhistogram/HdrHistogram/2.2.2/HdrHistogram-2.2.2.jar:/Users/nguyenvanduy/.m2/repository/org/latencyutils/LatencyUtils/2.0.3/LatencyUtils-2.0.3.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-starter-data-jpa/4.0.6/spring-boot-starter-data-jpa-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-starter-jdbc/4.0.6/spring-boot-starter-jdbc-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/com/zaxxer/HikariCP/7.0.2/HikariCP-7.0.2.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-data-jpa/4.0.6/spring-boot-data-jpa-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-data-commons/4.0.6/spring-boot-data-commons-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-persistence/4.0.6/spring-boot-persistence-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/data/spring-data-commons/4.0.5/spring-data-commons-4.0.5.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-hibernate/4.0.6/spring-boot-hibernate-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-jpa/4.0.6/spring-boot-jpa-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/jakarta/persistence/jakarta.persistence-api/3.2.0/jakarta.persistence-api-3.2.0.jar:/Users/nguyenvanduy/.m2/repository/org/hibernate/orm/hibernate-core/7.2.12.Final/hibernate-core-7.2.12.Final.jar:/Users/nguyenvanduy/.m2/repository/jakarta/transaction/jakarta.transaction-api/2.0.1/jakarta.transaction-api-2.0.1.jar:/Users/nguyenvanduy/.m2/repository/org/hibernate/models/hibernate-models/1.0.1/hibernate-models-1.0.1.jar:/Users/nguyenvanduy/.m2/repository/org/glassfish/jaxb/jaxb-runtime/4.0.6/jaxb-runtime-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/glassfish/jaxb/jaxb-core/4.0.6/jaxb-core-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/eclipse/angus/angus-activation/2.0.3/angus-activation-2.0.3.jar:/Users/nguyenvanduy/.m2/repository/org/glassfish/jaxb/txw2/4.0.6/txw2-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/com/sun/istack/istack-commons-runtime/4.1.2/istack-commons-runtime-4.1.2.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/spring-orm/7.0.7/spring-orm-7.0.7.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/data/spring-data-jpa/4.0.5/spring-data-jpa-4.0.5.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/spring-aop/7.0.7/spring-aop-7.0.7.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/spring-tx/7.0.7/spring-tx-7.0.7.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/spring-beans/7.0.7/spring-beans-7.0.7.jar:/Users/nguyenvanduy/.m2/repository/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/spring-aspects/7.0.7/spring-aspects-7.0.7.jar:/Users/nguyenvanduy/.m2/repository/org/aspectj/aspectjweaver/1.9.25.1/aspectjweaver-1.9.25.1.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-jdbc/4.0.6/spring-boot-jdbc-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-sql/4.0.6/spring-boot-sql-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-transaction/4.0.6/spring-boot-transaction-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/spring-jdbc/7.0.7/spring-jdbc-7.0.7.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-starter-liquibase/4.0.6/spring-boot-starter-liquibase-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-liquibase/4.0.6/spring-boot-liquibase-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/liquibase/liquibase-core/5.0.2/liquibase-core-5.0.2.jar:/Users/nguyenvanduy/.m2/repository/org/apache/commons/commons-collections4/4.5.0/commons-collections4-4.5.0.jar:/Users/nguyenvanduy/.m2/repository/org/apache/commons/commons-text/1.15.0/commons-text-1.15.0.jar:/Users/nguyenvanduy/.m2/repository/com/opencsv/opencsv/5.12.0/opencsv-5.12.0.jar:/Users/nguyenvanduy/.m2/repository/org/apache/commons/commons-lang3/3.19.0/commons-lang3-3.19.0.jar:/Users/nguyenvanduy/.m2/repository/commons-io/commons-io/2.21.0/commons-io-2.21.0.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-starter-webmvc/4.0.6/spring-boot-starter-webmvc-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-starter-jackson/4.0.6/spring-boot-starter-jackson-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-jackson/4.0.6/spring-boot-jackson-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-starter-tomcat/4.0.6/spring-boot-starter-tomcat-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-starter-tomcat-runtime/4.0.6/spring-boot-starter-tomcat-runtime-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/apache/tomcat/embed/tomcat-embed-core/11.0.21/tomcat-embed-core-11.0.21.jar:/Users/nguyenvanduy/.m2/repository/org/apache/tomcat/embed/tomcat-embed-websocket/11.0.21/tomcat-embed-websocket-11.0.21.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-tomcat/4.0.6/spring-boot-tomcat-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-http-converter/4.0.6/spring-boot-http-converter-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/spring-web/7.0.7/spring-web-7.0.7.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-webmvc/4.0.6/spring-boot-webmvc-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-servlet/4.0.6/spring-boot-servlet-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/spring-webmvc/7.0.7/spring-webmvc-7.0.7.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/spring-expression/7.0.7/spring-expression-7.0.7.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-starter-validation/4.0.6/spring-boot-starter-validation-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-validation/4.0.6/spring-boot-validation-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/apache/tomcat/embed/tomcat-embed-el/11.0.21/tomcat-embed-el-11.0.21.jar:/Users/nguyenvanduy/.m2/repository/org/hibernate/validator/hibernate-validator/9.0.1.Final/hibernate-validator-9.0.1.Final.jar:/Users/nguyenvanduy/.m2/repository/jakarta/validation/jakarta.validation-api/3.1.1/jakarta.validation-api-3.1.1.jar:/Users/nguyenvanduy/.m2/repository/org/jboss/logging/jboss-logging/3.6.3.Final/jboss-logging-3.6.3.Final.jar:/Users/nguyenvanduy/.m2/repository/com/fasterxml/classmate/1.7.3/classmate-1.7.3.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/cloud/spring-cloud-starter-config/5.0.1/spring-cloud-starter-config-5.0.1.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/cloud/spring-cloud-starter/5.0.1/spring-cloud-starter-5.0.1.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/cloud/spring-cloud-context/5.0.1/spring-cloud-context-5.0.1.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-restclient/4.0.6/spring-boot-restclient-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-http-client/4.0.6/spring-boot-http-client-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/security/spring-security-crypto/7.0.5/spring-security-crypto-7.0.5.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/cloud/spring-cloud-commons/5.0.1/spring-cloud-commons-5.0.1.jar:/Users/nguyenvanduy/.m2/repository/org/bouncycastle/bcprov-jdk18on/1.81/bcprov-jdk18on-1.81.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/cloud/spring-cloud-config-client/5.0.1/spring-cloud-config-client-5.0.1.jar:/Users/nguyenvanduy/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.21/jackson-annotations-2.21.jar:/Users/nguyenvanduy/.m2/repository/org/apache/httpcomponents/client5/httpclient5/5.5.2/httpclient5-5.5.2.jar:/Users/nguyenvanduy/.m2/repository/org/apache/httpcomponents/core5/httpcore5/5.3.6/httpcore5-5.3.6.jar:/Users/nguyenvanduy/.m2/repository/org/apache/httpcomponents/core5/httpcore5-h2/5.3.6/httpcore5-h2-5.3.6.jar:/Users/nguyenvanduy/.m2/repository/tools/jackson/core/jackson-databind/3.1.2/jackson-databind-3.1.2.jar:/Users/nguyenvanduy/.m2/repository/tools/jackson/core/jackson-core/3.1.2/jackson-core-3.1.2.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/cloud/spring-cloud-starter-netflix-eureka-client/5.0.1/spring-cloud-starter-netflix-eureka-client-5.0.1.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/cloud/spring-cloud-netflix-eureka-client/5.0.1/spring-cloud-netflix-eureka-client-5.0.1.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-jackson2/4.0.6/spring-boot-jackson2-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.21.2/jackson-datatype-jdk8-2.21.2.jar:/Users/nguyenvanduy/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.21.2/jackson-datatype-jsr310-2.21.2.jar:/Users/nguyenvanduy/.m2/repository/com/fasterxml/jackson/module/jackson-module-parameter-names/2.21.2/jackson-module-parameter-names-2.21.2.jar:/Users/nguyenvanduy/.m2/repository/com/netflix/eureka/eureka-client/2.0.5/eureka-client-2.0.5.jar:/Users/nguyenvanduy/.m2/repository/com/thoughtworks/xstream/xstream/1.4.21/xstream-1.4.21.jar:/Users/nguyenvanduy/.m2/repository/io/github/x-stream/mxparser/1.2.2/mxparser-1.2.2.jar:/Users/nguyenvanduy/.m2/repository/xmlpull/xmlpull/1.1.3.1/xmlpull-1.1.3.1.jar:/Users/nguyenvanduy/.m2/repository/jakarta/ws/rs/jakarta.ws.rs-api/4.0.0/jakarta.ws.rs-api-4.0.0.jar:/Users/nguyenvanduy/.m2/repository/jakarta/inject/jakarta.inject-api/2.0.1/jakarta.inject-api-2.0.1.jar:/Users/nguyenvanduy/.m2/repository/com/netflix/spectator/spectator-api/1.7.3/spectator-api-1.7.3.jar:/Users/nguyenvanduy/.m2/repository/org/slf4j/slf4j-api/2.0.17/slf4j-api-2.0.17.jar:/Users/nguyenvanduy/.m2/repository/org/apache/httpcomponents/httpclient/4.5.3/httpclient-4.5.3.jar:/Users/nguyenvanduy/.m2/repository/org/apache/httpcomponents/httpcore/4.4.16/httpcore-4.4.16.jar:/Users/nguyenvanduy/.m2/repository/commons-codec/commons-codec/1.19.0/commons-codec-1.19.0.jar:/Users/nguyenvanduy/.m2/repository/commons-configuration/commons-configuration/1.10/commons-configuration-1.10.jar:/Users/nguyenvanduy/.m2/repository/commons-lang/commons-lang/2.6/commons-lang-2.6.jar:/Users/nguyenvanduy/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.21.2/jackson-core-2.21.2.jar:/Users/nguyenvanduy/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.21.2/jackson-databind-2.21.2.jar:/Users/nguyenvanduy/.m2/repository/com/netflix/netflix-commons/netflix-eventbus/0.3.0/netflix-eventbus-0.3.0.jar:/Users/nguyenvanduy/.m2/repository/com/netflix/netflix-commons/netflix-infix/0.3.0/netflix-infix-0.3.0.jar:/Users/nguyenvanduy/.m2/repository/commons-jxpath/commons-jxpath/1.3/commons-jxpath-1.3.jar:/Users/nguyenvanduy/.m2/repository/joda-time/joda-time/2.3/joda-time-2.3.jar:/Users/nguyenvanduy/.m2/repository/org/antlr/antlr-runtime/3.4/antlr-runtime-3.4.jar:/Users/nguyenvanduy/.m2/repository/org/antlr/stringtemplate/3.2.1/stringtemplate-3.2.1.jar:/Users/nguyenvanduy/.m2/repository/antlr/antlr/2.7.7/antlr-2.7.7.jar:/Users/nguyenvanduy/.m2/repository/com/google/code/gson/gson/2.13.2/gson-2.13.2.jar:/Users/nguyenvanduy/.m2/repository/com/google/errorprone/error_prone_annotations/2.41.0/error_prone_annotations-2.41.0.jar:/Users/nguyenvanduy/.m2/repository/com/netflix/servo/servo-core/0.5.3/servo-core-0.5.3.jar:/Users/nguyenvanduy/.m2/repository/org/apache/commons/commons-math/2.2/commons-math-2.2.jar:/Users/nguyenvanduy/.m2/repository/javax/annotation/javax.annotation-api/1.2/javax.annotation-api-1.2.jar:/Users/nguyenvanduy/.m2/repository/org/codehaus/jettison/jettison/1.5.4/jettison-1.5.4.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/cloud/spring-cloud-starter-loadbalancer/5.0.1/spring-cloud-starter-loadbalancer-5.0.1.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/cloud/spring-cloud-loadbalancer/5.0.1/spring-cloud-loadbalancer-5.0.1.jar:/Users/nguyenvanduy/.m2/repository/io/projectreactor/reactor-core/3.8.5/reactor-core-3.8.5.jar:/Users/nguyenvanduy/.m2/repository/org/reactivestreams/reactive-streams/1.0.4/reactive-streams-1.0.4.jar:/Users/nguyenvanduy/.m2/repository/io/projectreactor/addons/reactor-extra/3.6.0/reactor-extra-3.6.0.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-starter-cache/4.0.6/spring-boot-starter-cache-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-cache/4.0.6/spring-boot-cache-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/spring-context-support/7.0.7/spring-context-support-7.0.7.jar:/Users/nguyenvanduy/.m2/repository/com/stoyanr/evictor/1.0.0/evictor-1.0.0.jar:/Users/nguyenvanduy/.m2/repository/org/mapstruct/mapstruct/1.6.3/mapstruct-1.6.3.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-devtools/4.0.6/spring-boot-devtools-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot/4.0.6/spring-boot-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/spring-core/7.0.7/spring-core-7.0.7.jar:/Users/nguyenvanduy/.m2/repository/commons-logging/commons-logging/1.3.6/commons-logging-1.3.6.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/spring-context/7.0.7/spring-context-7.0.7.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-autoconfigure/4.0.6/spring-boot-autoconfigure-4.0.6.jar:/Users/nguyenvanduy/.m2/repository/org/postgresql/postgresql/42.7.10/postgresql-42.7.10.jar:/Users/nguyenvanduy/.m2/repository/org/checkerframework/checker-qual/3.52.0/checker-qual-3.52.0.jar:/Users/nguyenvanduy/.m2/repository/org/projectlombok/lombok/1.18.46/lombok-1.18.46.jar:/Users/nguyenvanduy/.m2/repository/jakarta/xml/bind/jakarta.xml.bind-api/4.0.4/jakarta.xml.bind-api-4.0.4.jar:/Users/nguyenvanduy/.m2/repository/jakarta/activation/jakarta.activation-api/2.1.4/jakarta.activation-api-2.1.4.jar:/Users/nguyenvanduy/.m2/repository/net/bytebuddy/byte-buddy/1.17.8/byte-buddy-1.17.8.jar:/Users/nguyenvanduy/.m2/repository/org/springframework/boot/spring-boot-web-server/4.0.6/spring-boot-web-server-4.0.6.jar com.duy.hospital.patientservice.PatientServiceApplication
-
-  .   ____          _            __ _ _
- /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
- \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-  '  |____| .__|_| |_|_| |_\__, | / / / /
- =========|_|==============|___/=/_/_/_/
-
- :: Spring Boot ::                (v4.0.6)
-
-2026-05-30T15:51:57.899+07:00  INFO 53046 --- [patient-service] [  restartedMain] c.d.h.p.PatientServiceApplication        : Starting PatientServiceApplication using Java 25.0.2 with PID 53046 (/Users/nguyenvanduy/Desktop/hospital-platform/patient-service/target/classes started by nguyenvanduy in /Users/nguyenvanduy/Desktop/hospital-platform)
-2026-05-30T15:51:57.900+07:00  INFO 53046 --- [patient-service] [  restartedMain] c.d.h.p.PatientServiceApplication        : No active profile set, falling back to 1 default profile: "default"
-2026-05-30T15:51:57.921+07:00  INFO 53046 --- [patient-service] [  restartedMain] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-05-30T15:51:57.921+07:00  INFO 53046 --- [patient-service] [  restartedMain] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=patient-service, profiles=[default], label=null, version=null, state=null
-2026-05-30T15:51:57.922+07:00  INFO 53046 --- [patient-service] [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
-2026-05-30T15:51:57.922+07:00  INFO 53046 --- [patient-service] [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
-2026-05-30T15:51:58.297+07:00  INFO 53046 --- [patient-service] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-05-30T15:51:58.362+07:00  INFO 53046 --- [patient-service] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 60 ms. Found 1 JPA repository interface.
-2026-05-30T15:51:58.478+07:00  INFO 53046 --- [patient-service] [  restartedMain] o.s.cloud.context.scope.GenericScope     : BeanFactory id=12da93c4-a02a-3a06-b5db-80c14fdaca7d
-2026-05-30T15:51:58.681+07:00  INFO 53046 --- [patient-service] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8082 (http)
-2026-05-30T15:51:58.689+07:00  INFO 53046 --- [patient-service] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-05-30T15:51:58.689+07:00  INFO 53046 --- [patient-service] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.21]
-2026-05-30T15:51:58.703+07:00  INFO 53046 --- [patient-service] [  restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 781 ms
-2026-05-30T15:51:58.799+07:00  INFO 53046 --- [patient-service] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-05-30T15:51:58.861+07:00  INFO 53046 --- [patient-service] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@23760fae
-2026-05-30T15:51:58.861+07:00  INFO 53046 --- [patient-service] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-05-30T15:51:58.914+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.database                       : Set default schema name to public
-2026-05-30T15:52:00.395+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.changelog                      : Reading resource: db/changelog/changes/001-create-patient-tables.sql
-2026-05-30T15:52:00.424+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.changelog                      : Creating database changelog table with name: public.databasechangelog
-2026-05-30T15:52:00.441+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.changelog                      : Reading from public.databasechangelog
-2026-05-30T15:52:00.450+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.snapshot                       : Creating snapshot
-2026-05-30T15:52:00.485+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.lockservice                    : Successfully acquired change log lock
-2026-05-30T15:52:00.486+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.command                        : Using deploymentId: 0131118794
-2026-05-30T15:52:00.487+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.changelog                      : Reading from public.databasechangelog
-2026-05-30T15:52:00.502+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.ui                             : Running Changeset: db/changelog/changes/001-create-patient-tables.sql::001-create-patients::duy
-2026-05-30T15:52:00.515+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.changelog                      : Custom SQL executed
-2026-05-30T15:52:00.516+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.changelog                      : ChangeSet db/changelog/changes/001-create-patient-tables.sql::001-create-patients::duy ran successfully in 14ms
-2026-05-30T15:52:00.521+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.ui                             : Running Changeset: db/changelog/changes/001-create-patient-tables.sql::001-index-patients::duy
-2026-05-30T15:52:00.527+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.changelog                      : Custom SQL executed
-2026-05-30T15:52:00.528+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.changelog                      : ChangeSet db/changelog/changes/001-create-patient-tables.sql::001-index-patients::duy ran successfully in 7ms
-2026-05-30T15:52:00.529+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.ui                             : Running Changeset: db/changelog/changes/001-create-patient-tables.sql::001-create-emergency-contacts::duy
-2026-05-30T15:52:00.533+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.changelog                      : Custom SQL executed
-2026-05-30T15:52:00.533+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.changelog                      : ChangeSet db/changelog/changes/001-create-patient-tables.sql::001-create-emergency-contacts::duy ran successfully in 4ms
-2026-05-30T15:52:00.535+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.ui                             : Running Changeset: db/changelog/changes/001-create-patient-tables.sql::001-index-emergency-contacts::duy
-2026-05-30T15:52:00.537+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.changelog                      : Custom SQL executed
-2026-05-30T15:52:00.537+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.changelog                      : ChangeSet db/changelog/changes/001-create-patient-tables.sql::001-index-emergency-contacts::duy ran successfully in 2ms
-2026-05-30T15:52:00.538+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.ui                             : Running Changeset: db/changelog/changes/001-create-patient-tables.sql::001-create-patient-insurances::duy
-2026-05-30T15:52:00.543+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.changelog                      : Custom SQL executed
-2026-05-30T15:52:00.543+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.changelog                      : ChangeSet db/changelog/changes/001-create-patient-tables.sql::001-create-patient-insurances::duy ran successfully in 5ms
-2026-05-30T15:52:00.545+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.ui                             : Running Changeset: db/changelog/changes/001-create-patient-tables.sql::001-index-patient-insurances::duy
-2026-05-30T15:52:00.548+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.changelog                      : Custom SQL executed
-2026-05-30T15:52:00.548+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.changelog                      : ChangeSet db/changelog/changes/001-create-patient-tables.sql::001-index-patient-insurances::duy ran successfully in 3ms
-2026-05-30T15:52:00.551+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.util                           : UPDATE SUMMARY
-2026-05-30T15:52:00.551+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.util                           : Run:                          6
-2026-05-30T15:52:00.551+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.util                           : Previously run:               0
-2026-05-30T15:52:00.551+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.util                           : Filtered out:                 0
-2026-05-30T15:52:00.551+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.util                           : -------------------------------
-2026-05-30T15:52:00.551+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.util                           : Total change sets:            6
-2026-05-30T15:52:00.552+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.util                           : Update summary generated
-2026-05-30T15:52:00.552+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.command                        : Update command completed successfully.
-2026-05-30T15:52:00.553+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.ui                             : Liquibase: Update has been successful. Rows affected: 0
-2026-05-30T15:52:00.554+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.lockservice                    : Successfully released change log lock
-2026-05-30T15:52:00.555+07:00  INFO 53046 --- [patient-service] [  restartedMain] liquibase.command                        : Command execution complete
-2026-05-30T15:52:00.594+07:00  INFO 53046 --- [patient-service] [  restartedMain] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
-2026-05-30T15:52:00.619+07:00  INFO 53046 --- [patient-service] [  restartedMain] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.12.Final
-2026-05-30T15:52:00.785+07:00  INFO 53046 --- [patient-service] [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-05-30T15:52:00.813+07:00  INFO 53046 --- [patient-service] [  restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [jdbc:postgresql://localhost:5432/hospital_patient]
-	Database driver: PostgreSQL JDBC Driver
-	Database dialect: PostgreSQLDialect
-	Database version: 16.11
-	Default catalog/schema: hospital_patient/public
-	Autocommit mode: undefined/unknown
-	Isolation level: READ_COMMITTED [default READ_COMMITTED]
-	JDBC fetch size: none
-	Pool: DataSourceConnectionProvider
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2026-05-30T15:52:01.182+07:00  INFO 53046 --- [patient-service] [  restartedMain] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-05-30T15:52:01.209+07:00 ERROR 53046 --- [patient-service] [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Failed to initialize JPA EntityManagerFactory: Unable to build Hibernate SessionFactory  [persistence unit: default] ; nested exception is org.hibernate.tool.schema.spi.SchemaManagementException: Schema validation: wrong column type encountered in column [benefit_rate] in table [patient_insurances]; found [int4 (Types#INTEGER)], but expecting [varchar(20) (Types#VARCHAR)]
-2026-05-30T15:52:01.209+07:00  WARN 53046 --- [patient-service] [  restartedMain] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/hibernate/autoconfigure/HibernateJpaConfiguration.class]: Unable to build Hibernate SessionFactory  [persistence unit: default] ; nested exception is org.hibernate.tool.schema.spi.SchemaManagementException: Schema validation: wrong column type encountered in column [benefit_rate] in table [patient_insurances]; found [int4 (Types#INTEGER)], but expecting [varchar(20) (Types#VARCHAR)]
-2026-05-30T15:52:01.210+07:00  INFO 53046 --- [patient-service] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2026-05-30T15:52:01.210+07:00  INFO 53046 --- [patient-service] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2026-05-30T15:52:01.211+07:00  INFO 53046 --- [patient-service] [  restartedMain] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
-2026-05-30T15:52:01.216+07:00  INFO 53046 --- [patient-service] [  restartedMain] .s.b.a.l.ConditionEvaluationReportLogger : 
-
-Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
-2026-05-30T15:52:01.221+07:00 ERROR 53046 --- [patient-service] [  restartedMain] o.s.boot.SpringApplication               : Application run failed
-
-org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/hibernate/autoconfigure/HibernateJpaConfiguration.class]: Unable to build Hibernate SessionFactory  [persistence unit: default] ; nested exception is org.hibernate.tool.schema.spi.SchemaManagementException: Schema validation: wrong column type encountered in column [benefit_rate] in table [patient_insurances]; found [int4 (Types#INTEGER)], but expecting [varchar(20) (Types#VARCHAR)]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1817) ~[spring-beans-7.0.7.jar:7.0.7]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:603) ~[spring-beans-7.0.7.jar:7.0.7]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525) ~[spring-beans-7.0.7.jar:7.0.7]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333) ~[spring-beans-7.0.7.jar:7.0.7]
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371) ~[spring-beans-7.0.7.jar:7.0.7]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331) ~[spring-beans-7.0.7.jar:7.0.7]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:201) ~[spring-beans-7.0.7.jar:7.0.7]
-	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:977) ~[spring-context-7.0.7.jar:7.0.7]
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621) ~[spring-context-7.0.7.jar:7.0.7]
-	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143) ~[spring-boot-web-server-4.0.6.jar:4.0.6]
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756) ~[spring-boot-4.0.6.jar:4.0.6]
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445) ~[spring-boot-4.0.6.jar:4.0.6]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321) ~[spring-boot-4.0.6.jar:4.0.6]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365) ~[spring-boot-4.0.6.jar:4.0.6]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354) ~[spring-boot-4.0.6.jar:4.0.6]
-	at com.duy.hospital.patientservice.PatientServiceApplication.main(PatientServiceApplication.java:10) ~[classes/:na]
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
-	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:52) ~[spring-boot-devtools-4.0.6.jar:4.0.6]
-Caused by: jakarta.persistence.PersistenceException: Unable to build Hibernate SessionFactory  [persistence unit: default] ; nested exception is org.hibernate.tool.schema.spi.SchemaManagementException: Schema validation: wrong column type encountered in column [benefit_rate] in table [patient_insurances]; found [int4 (Types#INTEGER)], but expecting [varchar(20) (Types#VARCHAR)]
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:448) ~[spring-orm-7.0.7.jar:7.0.7]
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:411) ~[spring-orm-7.0.7.jar:7.0.7]
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:419) ~[spring-orm-7.0.7.jar:7.0.7]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1864) ~[spring-beans-7.0.7.jar:7.0.7]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1813) ~[spring-beans-7.0.7.jar:7.0.7]
-	... 18 common frames omitted
-Caused by: org.hibernate.tool.schema.spi.SchemaManagementException: Schema validation: wrong column type encountered in column [benefit_rate] in table [patient_insurances]; found [int4 (Types#INTEGER)], but expecting [varchar(20) (Types#VARCHAR)]
-	at org.hibernate.tool.schema.internal.AbstractSchemaValidator.validateColumnType(AbstractSchemaValidator.java:153) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
-	at org.hibernate.tool.schema.internal.AbstractSchemaValidator.validateTable(AbstractSchemaValidator.java:141) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
-	at org.hibernate.tool.schema.internal.GroupedSchemaValidatorImpl.validateTables(GroupedSchemaValidatorImpl.java:42) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
-	at org.hibernate.tool.schema.internal.AbstractSchemaValidator.performValidation(AbstractSchemaValidator.java:90) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
-	at org.hibernate.tool.schema.internal.AbstractSchemaValidator.doValidation(AbstractSchemaValidator.java:68) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:278) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$1(SchemaManagementToolCoordinator.java:101) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
-	at java.base/java.util.HashMap.forEach(HashMap.java:1430) ~[na:na]
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:100) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
-	at org.hibernate.boot.internal.SessionFactoryObserverForSchemaExport.sessionFactoryCreated(SessionFactoryObserverForSchemaExport.java:35) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
-	at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:33) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
-	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:323) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
-	at org.hibernate.internal.SessionFactoryRegistry.instantiateSessionFactory(SessionFactoryRegistry.java:64) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
-	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:437) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
-	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1456) ~[hibernate-core-7.2.12.Final.jar:7.2.12.Final]
-	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:93) ~[spring-orm-7.0.7.jar:7.0.7]
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:443) ~[spring-orm-7.0.7.jar:7.0.7]
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:436) ~[spring-orm-7.0.7.jar:7.0.7]
-	... 22 common frames omitted
-
-
-Process finished with exit code 0
+Hibernate:
+select
+p1_0.patient_id,
+p1_0.address,
+p1_0.city,
+p1_0.created_at,
+p1_0.date_of_birth,
+p1_0.email,
+p1_0.first_name,
+p1_0.gender,
+p1_0.last_name,
+p1_0.phone,
+p1_0.status,
+p1_0.updated_at,
+p1_0.user_id
+from
+patients p1_0
+offset
+? rows
+fetch
+first ? rows only
+Hibernate:
+select
+pi1_0.insurance_id,
+pi1_0.benefit_rate,
+pi1_0.card_number,
+pi1_0.continuous_from,
+pi1_0.created_at,
+pi1_0.initial_facility_code,
+pi1_0.participant_type,
+pi1_0.patient_id,
+pi1_0.status,
+pi1_0.updated_at,
+pi1_0.valid_from,
+pi1_0.valid_to
+from
+patient_insurances pi1_0
+where
+pi1_0.patient_id=?
+Hibernate:
+select
+pi1_0.insurance_id,
+pi1_0.benefit_rate,
+pi1_0.card_number,
+pi1_0.continuous_from,
+pi1_0.created_at,
+pi1_0.initial_facility_code,
+pi1_0.participant_type,
+pi1_0.patient_id,
+pi1_0.status,
+pi1_0.updated_at,
+pi1_0.valid_from,
+pi1_0.valid_to
+from
+patient_insurances pi1_0
+where
+pi1_0.patient_id=?
+Hibernate:
+select
+pi1_0.insurance_id,
+pi1_0.benefit_rate,
+pi1_0.card_number,
+pi1_0.continuous_from,
+pi1_0.created_at,
+pi1_0.initial_facility_code,
+pi1_0.participant_type,
+pi1_0.patient_id,
+pi1_0.status,
+pi1_0.updated_at,
+pi1_0.valid_from,
+pi1_0.valid_to
+from
+patient_insurances pi1_0
+where
+pi1_0.patient_id=?

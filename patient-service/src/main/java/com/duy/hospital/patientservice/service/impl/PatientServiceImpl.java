@@ -1,7 +1,9 @@
 package com.duy.hospital.patientservice.service.impl;
 
 import com.duy.hospital.patientservice.dto.request.PatientRequest;
+import com.duy.hospital.patientservice.dto.response.PageResponse;
 import com.duy.hospital.patientservice.dto.response.PatientResponse;
+import com.duy.hospital.patientservice.dto.response.PatientSummaryResponse;
 import com.duy.hospital.patientservice.dto.response.ResponseCode;
 import com.duy.hospital.patientservice.entity.EmergencyContact;
 import com.duy.hospital.patientservice.entity.Patient;
@@ -13,6 +15,7 @@ import com.duy.hospital.patientservice.repository.PatientRepository;
 import com.duy.hospital.patientservice.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,8 +61,40 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<PatientResponse> getPatients(Pageable pageable) {
-        return List.of();
+    @Transactional(readOnly = true)
+    public PageResponse<PatientResponse> getPatients(Pageable pageable) {
+        Page<Patient> patients = patientRepository.findAllWithInsurance(pageable);
+
+        List<UUID> ids = patients.getContent().stream()
+                .map(Patient::getPatientId)
+                .toList();
+
+        if (!ids.isEmpty()) {
+            patientRepository.findAllWithEmergencyContacts(ids);
+        }
+
+        return PageResponse.<PatientResponse>builder()
+                .content(patients.getContent().stream()
+                        .map(patientMapper::toResponse)
+                        .collect(Collectors.toList()))
+                .page(patients.getNumber())
+                .size(patients.getSize())
+                .totalElements(patients.getTotalElements())
+                .totalPages(patients.getTotalPages())
+                .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<PatientSummaryResponse> getPatientSummaries(Pageable pageable) {
+        Page<PatientSummaryResponse> page = patientRepository.findAllSummaries(pageable);
+        return PageResponse.<PatientSummaryResponse>builder()
+                .content(page.getContent())
+                .page(page.getNumber())
+                .size(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .build();
     }
 
     @Override

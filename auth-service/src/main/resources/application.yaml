@@ -32,6 +32,6 @@ auth:
   jwt:
     issuer: hospital-auth-service
     secret: "local-dev-secret-change-me-local-dev-secret-change-me"
-    access-token-ttl-minutes: 15
+    access-token-ttl-minutes: 180
   refresh-token:
     ttl-days: 30

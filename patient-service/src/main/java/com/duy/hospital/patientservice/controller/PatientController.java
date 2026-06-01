@@ -1,9 +1,7 @@
 package com.duy.hospital.patientservice.controller;
 
 import com.duy.hospital.patientservice.dto.request.PatientRequest;
-import com.duy.hospital.patientservice.dto.response.ApiResponse;
-import com.duy.hospital.patientservice.dto.response.PatientResponse;
-import com.duy.hospital.patientservice.dto.response.ResponseCode;
+import com.duy.hospital.patientservice.dto.response.*;
 import com.duy.hospital.patientservice.service.PatientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -32,9 +29,15 @@ public class PatientController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<PatientResponse>>> getPatients(Pageable pageable) {
-        List<PatientResponse> patients = patientService.getPatients(pageable);
+    public ResponseEntity<ApiResponse<PageResponse<PatientResponse>>> getPatients(Pageable pageable) {
+        PageResponse<PatientResponse> patients = patientService.getPatients(pageable);
         return ResponseEntity.ok(ApiResponse.of(ResponseCode.SUCCESS, patients));
+    }
+
+    @GetMapping("/summaries")
+    public ResponseEntity<ApiResponse<PageResponse<PatientSummaryResponse>>> getPatientSummaries(Pageable pageable) {
+        PageResponse<PatientSummaryResponse> summaries = patientService.getPatientSummaries(pageable);
+        return ResponseEntity.ok(ApiResponse.of(ResponseCode.SUCCESS, summaries));
     }
 
     @GetMapping("/{patientId}")
