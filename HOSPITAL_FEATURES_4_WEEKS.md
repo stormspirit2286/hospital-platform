@@ -161,7 +161,8 @@ API chính:
 - `POST /patients`
 - `GET /patients/{id}`
 - `PATCH /patients/{id}`
-- `GET /patients/search?keyword=...`
+- `GET /patients?search=...`
+- `GET /patients/summaries?search=...`
 - `GET /patients/{id}/summary`
 - `GET /patients/me`
 - `PATCH /patients/me`

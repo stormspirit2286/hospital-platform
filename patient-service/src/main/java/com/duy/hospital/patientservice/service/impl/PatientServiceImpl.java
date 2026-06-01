@@ -13,6 +13,7 @@ import com.duy.hospital.patientservice.entity.enums.InsuranceStatus;
 import com.duy.hospital.patientservice.exception.AppException;
 import com.duy.hospital.patientservice.mapper.PatientMapper;
 import com.duy.hospital.patientservice.repository.PatientRepository;
+import com.duy.hospital.patientservice.security.AuthenticatedUser;
 import com.duy.hospital.patientservice.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,9 @@ public class PatientServiceImpl implements PatientService {
     @Transactional
     public PatientResponse createPatient(PatientRequest patientRequest) {
         log.info("creating new Patient - {} {}", patientRequest.getFirstName(), patientRequest.getLastName());
+        if (patientRequest.getUserId() != null && patientRepository.existsByUserId(patientRequest.getUserId())) {
+            throw new AppException(ResponseCode.PATIENT_ALREADY_EXISTS);
+        }
         Patient patient = patientMapper.toEntity(patientRequest);
         if (patientRequest.getInsurance() != null) {
             PatientInsurance patientInsurance = patientMapper.toEntity(patientRequest.getInsurance());
@@ -63,8 +67,8 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<PatientResponse> getPatients(Pageable pageable) {
-        Page<Patient> patients = patientRepository.findAllWithInsurance(pageable);
+    public PageResponse<PatientResponse> getPatients(String search, Pageable pageable) {
+        Page<Patient> patients = patientRepository.searchAllWithInsurance(normalizeSearch(search), pageable);
 
         List<UUID> ids = patients.getContent().stream()
                 .map(Patient::getPatientId)
@@ -82,20 +86,16 @@ public class PatientServiceImpl implements PatientService {
                 .size(patients.getSize())
                 .totalElements(patients.getTotalElements())
                 .totalPages(patients.getTotalPages())
+                .first(patients.isFirst())
+                .last(patients.isLast())
                 .build();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<PatientSummaryResponse> getPatientSummaries(Pageable pageable) {
-        Page<PatientSummaryResponse> page = patientRepository.findAllSummaries(pageable);
-        return PageResponse.<PatientSummaryResponse>builder()
-                .content(page.getContent())
-                .page(page.getNumber())
-                .size(page.getSize())
-                .totalElements(page.getTotalElements())
-                .totalPages(page.getTotalPages())
-                .build();
+    public PageResponse<PatientSummaryResponse> getPatientSummaries(String search, Pageable pageable) {
+        Page<PatientSummaryResponse> page = patientRepository.searchSummaries(normalizeSearch(search), pageable);
+        return PageResponse.from(page);
     }
 
     @Override
@@ -116,11 +116,50 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public PatientResponse getMyPatient(AuthenticatedUser user) {
+        Patient patient = patientRepository.findByUserId(user.userId())
+                .orElseThrow(() -> new AppException(ResponseCode.PATIENT_NOT_FOUND));
+        return patientMapper.toResponse(patient);
+    }
+
+    @Override
+    @Transactional
+    public PatientResponse updateMyPatient(AuthenticatedUser user, PatientUpdateRequest request) {
+        Patient patient = patientRepository.findByUserId(user.userId())
+                .orElseThrow(() -> new AppException(ResponseCode.PATIENT_NOT_FOUND));
+        updatePatientOwnedFields(request, patient);
+        return patientMapper.toResponse(patient);
+    }
+
+    @Override
     @Transactional
     public void deletePatient(UUID patientId) {
         if (!patientRepository.existsById(patientId)) {
             throw new AppException(ResponseCode.PATIENT_NOT_FOUND);
         }
         patientRepository.deleteById(patientId);
+    }
+
+    private String normalizeSearch(String search) {
+        if (search == null || search.isBlank()) {
+            return null;
+        }
+        return search.trim();
+    }
+
+    private void updatePatientOwnedFields(PatientUpdateRequest request, Patient patient) {
+        if (request.getEmail() != null) {
+            patient.setEmail(request.getEmail());
+        }
+        if (request.getPhone() != null) {
+            patient.setPhone(request.getPhone());
+        }
+        if (request.getAddress() != null) {
+            patient.setAddress(request.getAddress());
+        }
+        if (request.getCity() != null) {
+            patient.setCity(request.getCity());
+        }
     }
 }

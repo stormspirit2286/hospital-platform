@@ -18,7 +18,7 @@ class ApiGatewayApplicationTests {
     @Test
     void protectedRouteWithoutTokenReturnsUnauthorized() {
         webTestClient().get()
-                .uri("/api/patients")
+                .uri("/api/v1/patients")
                 .exchange()
                 .expectStatus().isUnauthorized();
     }

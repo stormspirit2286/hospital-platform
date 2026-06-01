@@ -27,7 +27,6 @@ public interface PatientMapper {
 
 
     @Mapping(target = "patientId", ignore = true)
-    @Mapping(target = "userId", ignore = true)
     @Mapping(target = "status", constant = "ACTIVE")
     @Mapping(target = "insurance", ignore = true)
     @Mapping(target = "emergencyContacts", ignore = true)

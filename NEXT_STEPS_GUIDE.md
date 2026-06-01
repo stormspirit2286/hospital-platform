@@ -41,29 +41,36 @@ Lý do làm `patient-service` trước `appointment-service`:
 
 Coi nhu xong khi:
 
-- [ ] Service start, register len Eureka, route `/api/patients/**` qua gateway hoat dong.
+- [x] Service start, register len Eureka, route `/api/v1/patients/**` qua gateway hoat dong.
 - [x] Liquibase tao day du 3 bang: `patients`, `emergency_contacts`, `patient_insurances` (schema xem [HOSPITAL_DB_DESIGN.md](HOSPITAL_DB_DESIGN.md)).
 - [x] Entity layer cho patient-service da tao xong:
   - `BaseEntity`
   - `Patient`
   - `EmergencyContact`
   - `PatientInsurance`
-- [ ] 7 API trong [HOSPITAL_FEATURES_4_WEEKS.md](HOSPITAL_FEATURES_4_WEEKS.md) co the goi qua gateway:
-  - [ ] `POST /api/patients`
-  - [ ] `GET  /api/patients/{id}`
-  - [ ] `PATCH /api/patients/{id}`
-  - [ ] `GET  /api/patients/search?keyword=...&page=&size=`
-  - [ ] `GET  /api/patients/{id}/summary`
-  - [ ] `GET  /api/patients/me`
-  - [ ] `PATCH /api/patients/me`
-- [ ] Authorization theo role + ownership rule:
-  - PATIENT: chi doc/sua duoc record `user_id = X-User-Id` cua chinh minh (qua `/me`).
-  - DOCTOR / RECEPTIONIST / ADMIN: doc duoc record bat ky, search, view summary.
-  - Chi ADMIN / RECEPTIONIST duoc tao patient ho.
-- [ ] Validation chuan (email, phone not blank, dob not future, gender enum, status enum).
-- [ ] GlobalExceptionHandler tra ErrorResponse dong format voi auth-service.
-- [ ] Ham search co paging (`Pageable`), khong tra ve toan bo bang.
-- [ ] Smoke test qua gateway: dang nhap PATIENT -> goi `/api/patients/me` -> 404 (chua co record) -> ADMIN tao patient -> PATIENT goi `/me` -> 200.
+- [x] API first slice co the goi qua gateway:
+  - [x] `POST /api/v1/patients`
+  - [x] `GET  /api/v1/patients/{id}`
+  - [x] `PATCH /api/v1/patients/{id}`
+  - [x] `GET  /api/v1/patients?search=...&page=&size=`
+  - [x] `GET  /api/v1/patients/summaries?search=...&page=&size=`
+  - [x] `GET  /api/v1/patients/me`
+  - [x] `PATCH /api/v1/patients/me`
+- [x] Authorization theo role + ownership rule:
+  - PATIENT: doc/sua record `user_id = X-User-Id` cua chinh minh qua `/me`.
+  - DOCTOR / RECEPTIONIST / ADMIN: doc record bat ky, search, view summaries.
+  - Chi ADMIN / RECEPTIONIST duoc tao/sua/xoa patient ho.
+- [ ] Validation chuan (email, phone not blank, dob not future da co; gender/status enum con de String trong first slice).
+- [x] GlobalExceptionHandler tra ApiResponse error format rieng cua patient-service.
+- [x] Ham search co paging (`Pageable`), khong tra ve toan bo bang.
+- [ ] Smoke test full qua gateway: dang nhap PATIENT -> goi `/api/v1/patients/me` -> 404 (chua co record) -> ADMIN tao patient -> PATIENT goi `/me` -> 200.
+
+Update 2026-06-01:
+
+- Patient-service da du foundation slice de chuyen sang `appointment-service`.
+- Route thuc te la `/api/v1/patients/**`, khong phai `/api/patients/**`.
+- Search duoc gop vao query param `search`, khong tao route rieng `/search`.
+- Chua strict-complete cac enhancement: `GET /api/v1/patients/{id}/summary`, update emergency contact/insurance qua `/me`, enum hoa gender/status, full gateway smoke test.
 
 ---
 
@@ -124,28 +131,28 @@ com.duy.hospital.patientservice
     PatientServiceApplication.java
     config/
         JpaConfig.java             # DONE - JPA auditing
-        SecurityConfig.java        # TODO - headers-based authn, KHONG dung JWT
-        HeaderAuthenticationFilter.java # TODO
-    web/
-        PatientController.java     # TODO
+        SecurityConfig.java        # DONE - headers-based authn, KHONG dung JWT
+    security/
+        HeaderAuthenticationFilter.java # DONE
+        AuthenticatedUser.java          # DONE
+    controller/
+        PatientController.java     # DONE
     service/
-        PatientService.java        # TODO
+        PatientService.java        # DONE
+        impl/PatientServiceImpl.java # DONE
     repository/
-        PatientRepository.java          # TODO - JpaRepository + JpaSpecificationExecutor
-        EmergencyContactRepository.java # TODO
-        PatientInsuranceRepository.java # TODO
+        PatientRepository.java          # DONE - Aggregate Root repository
     entity/
         BaseEntity.java            # DONE
         Patient.java               # DONE
         EmergencyContact.java      # DONE
         PatientInsurance.java      # DONE
-        PatientStatus.java         # TODO, or keep status as String for first slice
-        Gender.java                # TODO, or keep gender as String for first slice
+        PatientStatus.java         # TODO later, status kept as String for first slice
+        Gender.java                # TODO later, gender kept as String for first slice
     dto/
         request/
-            CreatePatientRequest.java
-            UpdatePatientRequest.java
-            UpdateMyPatientRequest.java
+            PatientRequest.java
+            PatientUpdateRequest.java
         response/
             PatientResponse.java
             PatientSummaryResponse.java
@@ -157,9 +164,6 @@ com.duy.hospital.patientservice
         ErrorCode.java
         ErrorResponse.java
         GlobalExceptionHandler.java
-    security/
-        AuthenticatedUser.java      # record chua userId/email/roles
-        CurrentUser.java            # @AuthenticationPrincipal-style helper
 ```
 
 Update 2026-05-27:
@@ -183,12 +187,12 @@ Vi gateway da forward 3 header `X-User-Id` / `X-User-Email` / `X-User-Roles`, pa
    - Set UsernamePasswordAuthenticationToken voi authorities = ROLE_{role}.
 4. Dat filter truoc UsernamePasswordAuthenticationFilter.
 5. .authorizeHttpRequests:
-   - POST /api/patients => hasAnyRole("ADMIN","RECEPTIONIST")
-   - PATCH /api/patients/{id} => hasAnyRole("ADMIN","RECEPTIONIST")
-   - GET /api/patients/{id} => hasAnyRole("ADMIN","RECEPTIONIST","DOCTOR")
-   - GET /api/patients/{id}/summary => hasAnyRole("ADMIN","RECEPTIONIST","DOCTOR")
-   - GET /api/patients/search => hasAnyRole("ADMIN","RECEPTIONIST","DOCTOR")
-   - GET/PATCH /api/patients/me => authenticated()
+   - POST /api/v1/patients => hasAnyRole("ADMIN","RECEPTIONIST")
+   - PATCH /api/v1/patients/{id} => hasAnyRole("ADMIN","RECEPTIONIST")
+   - DELETE /api/v1/patients/{id} => hasAnyRole("ADMIN","RECEPTIONIST")
+   - GET /api/v1/patients/{id} => hasAnyRole("ADMIN","RECEPTIONIST","DOCTOR")
+   - GET /api/v1/patients/summaries?search=... => hasAnyRole("ADMIN","RECEPTIONIST","DOCTOR")
+   - GET/PATCH /api/v1/patients/me => authenticated()
    - anyRequest() => denyAll()
 ```
 
@@ -197,30 +201,32 @@ Bao mat: trong production gateway phai la cua duy nhat. Service nay khong nen ex
 ### Step 5. Business rules quan trong
 
 ```text
-- /api/patients/me:
+- /api/v1/patients/me:
     - SELECT WHERE user_id = X-User-Id
     - Khong tim thay -> 404 PATIENT_NOT_FOUND.
-- POST /api/patients (ADMIN/RECEPTIONIST tao ho):
+- POST /api/v1/patients (ADMIN/RECEPTIONIST tao ho):
     - user_id optional. Neu truyen, validate khong trung patient khac (UNIQUE).
     - status mac dinh ACTIVE.
-- PATCH /api/patients/{id} (ADMIN/RECEPTIONIST):
+- PATCH /api/v1/patients/{id} (ADMIN/RECEPTIONIST):
     - Khong cho doi user_id sau khi da set.
     - Khong cho doi date_of_birth thanh ngay tuong lai.
-- PATCH /api/patients/me (PATIENT):
-    - Chi cho doi: phone, address, city, emergency contact, insurance.
+- PATCH /api/v1/patients/me (PATIENT):
+    - First slice chi cho doi: email, phone, address, city.
+    - Later co the mo rong emergency contact, insurance.
     - Khong cho doi: first_name, last_name, date_of_birth, gender, user_id, status.
 - Search:
-    - Keyword optional. Match LIKE '%kw%' tren full_name OR phone OR email.
+    - Query param `search` optional. Match LIKE '%search%' tren full_name OR phone OR email.
     - LUON co Pageable, mac dinh size=20, max size=100.
     - Sort mac dinh: updated_at DESC.
 - Summary (dung cho doctor):
-    - Tra ve: id, full name, dob, gender, phone, latest insurance status (ACTIVE first).
-    - KHONG tra ve dia chi day du, KHONG tra ve insurance policy_number day du (mask 4 ky tu cuoi).
+    - First slice tra ve: id, full name, dob, gender, phone, email, city, status.
+    - Later co the them latest insurance status neu doctor workflow can.
+    - KHONG tra ve dia chi day du, KHONG tra ve insurance card_number/policy_number day du.
 ```
 
 ### Step 6. Cau hinh gateway route (da co)
 
-`api-gateway/src/main/resources/application.yaml` da co route `/api/patients/** -> lb://patient-service`. Khong can them gi. Sau khi start patient-service, kiem tra `http://localhost:8761` thay `PATIENT-SERVICE` register.
+`api-gateway/src/main/resources/application.yaml` da co route `/api/v1/patients/** -> lb://patient-service`. Khong can them gi. Sau khi start patient-service, kiem tra `http://localhost:8761` thay `PATIENT-SERVICE` register.
 
 ### Step 7. Smoke test qua gateway
 
@@ -229,7 +235,7 @@ Bao mat: trong production gateway phai la cua duy nhat. Service nay khong nen ex
 POST /api/auth/login {admin@hospital.local}
 => luu accessToken admin
 
-POST http://localhost:8080/api/patients
+POST http://localhost:8080/api/v1/patients
 Authorization: Bearer <admin_at>
 { "userId":"33333333-3333-3333-3333-333333333333",
   "firstName":"Patient","lastName":"One","phone":"0922222222",
@@ -240,23 +246,23 @@ Authorization: Bearer <admin_at>
 POST /api/auth/login {patient1@hospital.local}
 => luu accessToken patient1
 
-GET http://localhost:8080/api/patients/me
+GET http://localhost:8080/api/v1/patients/me
 Authorization: Bearer <patient1_at>
 => 200 + record vua tao
 
 # 3. Patient1 thu doc record nguoi khac => 403.
-GET http://localhost:8080/api/patients/<random-uuid>
+GET http://localhost:8080/api/v1/patients/<random-uuid>
 Authorization: Bearer <patient1_at>
 => 403 FORBIDDEN
 
 # 4. Doctor1 tim kiem.
 POST /api/auth/login {doctor1@hospital.local}
-GET http://localhost:8080/api/patients/search?keyword=Patient&page=0&size=10
+GET http://localhost:8080/api/v1/patients/summaries?search=Patient&page=0&size=10
 Authorization: Bearer <doctor1_at>
 => 200 + danh sach
 
 # 5. Patient1 thu PATCH ten => phai bi tu choi.
-PATCH http://localhost:8080/api/patients/me
+PATCH http://localhost:8080/api/v1/patients/me
 { "firstName":"Hack" }
 => 400 hoac field bi ignore (tuy implementation).
 ```

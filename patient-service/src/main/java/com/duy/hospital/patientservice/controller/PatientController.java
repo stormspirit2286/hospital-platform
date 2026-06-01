@@ -3,12 +3,14 @@ package com.duy.hospital.patientservice.controller;
 import com.duy.hospital.patientservice.dto.request.PatientRequest;
 import com.duy.hospital.patientservice.dto.request.PatientUpdateRequest;
 import com.duy.hospital.patientservice.dto.response.*;
+import com.duy.hospital.patientservice.security.AuthenticatedUser;
 import com.duy.hospital.patientservice.service.PatientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -30,15 +32,34 @@ public class PatientController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<PageResponse<PatientResponse>>> getPatients(Pageable pageable) {
-        PageResponse<PatientResponse> patients = patientService.getPatients(pageable);
+    public ResponseEntity<ApiResponse<PageResponse<PatientResponse>>> getPatients(
+            @RequestParam(required = false) String search,
+            Pageable pageable) {
+        PageResponse<PatientResponse> patients = patientService.getPatients(search, pageable);
         return ResponseEntity.ok(ApiResponse.of(ResponseCode.SUCCESS, patients));
     }
 
     @GetMapping("/summaries")
-    public ResponseEntity<ApiResponse<PageResponse<PatientSummaryResponse>>> getPatientSummaries(Pageable pageable) {
-        PageResponse<PatientSummaryResponse> summaries = patientService.getPatientSummaries(pageable);
+    public ResponseEntity<ApiResponse<PageResponse<PatientSummaryResponse>>> getPatientSummaries(
+            @RequestParam(required = false) String search,
+            Pageable pageable) {
+        PageResponse<PatientSummaryResponse> summaries = patientService.getPatientSummaries(search, pageable);
         return ResponseEntity.ok(ApiResponse.of(ResponseCode.SUCCESS, summaries));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<PatientResponse>> getMyPatient(
+            @AuthenticationPrincipal AuthenticatedUser user) {
+        PatientResponse patient = patientService.getMyPatient(user);
+        return ResponseEntity.ok(ApiResponse.of(ResponseCode.SUCCESS, patient));
+    }
+
+    @PatchMapping("/me")
+    public ResponseEntity<ApiResponse<PatientResponse>> updateMyPatient(
+            @AuthenticationPrincipal AuthenticatedUser user,
+            @Valid @RequestBody PatientUpdateRequest request) {
+        PatientResponse updated = patientService.updateMyPatient(user, request);
+        return ResponseEntity.ok(ApiResponse.of(ResponseCode.SUCCESS, updated));
     }
 
     @GetMapping("/{patientId}")

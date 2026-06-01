@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -13,6 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class PatientRequest {
+
+    private UUID userId;
 
     @NotBlank(message = "First name is required")
     @Size(max = 80, message = "First name must not exceed 80 characters")

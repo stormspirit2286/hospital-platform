@@ -131,7 +131,7 @@ Dung de chan route theo role o muc coarse-grained.
 Vi du:
 
 ```text
-PATIENT  -> /api/patients/me
+PATIENT  -> /api/v1/patients/me
 ADMIN    -> /api/admin/**
 DOCTOR   -> /api/medical-records/**
 ```
@@ -291,7 +291,7 @@ POST /api/auth/login
 -> auth-service verify email/password
 -> auth-service tra access token + refresh token
 
-GET /api/patients/me
+GET /api/v1/patients/me
 -> client gui Authorization: Bearer <access_token>
 -> api-gateway verify JWT
 -> api-gateway set X-User-Id va X-User-Role
@@ -370,7 +370,7 @@ Dang co route:
 
 ```text
 /api/auth/**                                -> auth-service
-/api/patients/**                            -> patient-service
+/api/v1/patients/**                         -> patient-service
 /api/appointments/**,/api/departments/**,
 /api/doctors/**                             -> appointment-service
 ```
@@ -518,7 +518,7 @@ Tat ca request smoke test goi qua gateway `http://localhost:8080`, KHONG goi tru
 | 10| Reuse refresh token cu sau khi rotate                     | POST /api/auth/refresh              | 401 INVALID_REFRESH_TOKEN     | OK |
 | 11| Logout (Bearer access + refresh body)                     | POST /api/auth/logout               | 200 Logged out successfully   | OK |
 | 12| Refresh lai sau khi logout                                | POST /api/auth/refresh              | 401 INVALID_REFRESH_TOKEN     | OK |
-| 13| Goi route protected khong token                           | GET  /api/patients/me               | 401                           | OK |
+| 13| Goi route protected khong token                           | GET  /api/v1/patients/me            | 401                           | OK |
 | 14| Goi route khong dinh nghia                                | GET  /api/unknown                   | 401 (deny by default)         | OK |
 | 15| Forward X-Correlation-Id tren routed response             | POST /api/auth/login + header       | echo lai dung gia tri client gui | OK |
 
@@ -533,6 +533,58 @@ config-service, discovery-service, auth-service, api-gateway: san sang cho giai 
 JWT HS256 issuer=hospital-auth-service: gateway verify offline OK.
 Refresh token opaque + SHA-256 hash + rotation + revoke-on-logout: hoat dong dung.
 Identity forward (X-User-Id, X-User-Email, X-User-Roles) duoc tin cay vi gateway sanitize header truoc khi set lai.
+```
+
+---
+
+## 11. patient-service Gateway Contract Update (2026-06-01)
+
+Patient-service route thuc te dang dung versioned API:
+
+```text
+/api/v1/patients/** -> lb://patient-service
+```
+
+Gateway chi validate JWT va forward identity. Patient-service tu enforce role/ownership bang headers:
+
+```text
+X-User-Id
+X-User-Email
+X-User-Roles
+```
+
+Flow `/me`:
+
+```text
+Client Bearer JWT
+-> api-gateway verify JWT
+-> api-gateway sanitize X-User-* client gui len
+-> api-gateway set X-User-Id = JWT subject
+-> patient-service HeaderAuthenticationFilter tao AuthenticatedUser
+-> PatientController @AuthenticationPrincipal
+-> PatientService SELECT WHERE user_id = AuthenticatedUser.userId
+```
+
+Current patient endpoints qua gateway:
+
+```text
+POST   /api/v1/patients
+GET    /api/v1/patients?search=&page=&size=
+GET    /api/v1/patients/summaries?search=&page=&size=
+GET    /api/v1/patients/me
+PATCH  /api/v1/patients/me
+GET    /api/v1/patients/{patientId}
+PATCH  /api/v1/patients/{patientId}
+DELETE /api/v1/patients/{patientId}
+```
+
+Con can smoke test full voi token that truoc khi danh dau strict-complete:
+
+```text
+1. Login admin -> POST /api/v1/patients voi userId cua patient1.
+2. Login patient1 -> GET /api/v1/patients/me => 200.
+3. Login doctor1 -> GET /api/v1/patients/summaries?search=Patient&page=0&size=10 => 200.
+4. Goi route protected khong token -> 401.
 ```
 
 Phan con thieu (theo dau cho cac buoc sau):

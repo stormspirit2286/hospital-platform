@@ -15,6 +15,8 @@ import java.util.UUID;
 
 @Repository
 public interface PatientRepository extends JpaRepository<Patient, UUID> {
+    boolean existsByUserId(UUID userId);
+
     @Query(
             "SELECT p FROM Patient p " +
             "LEFT JOIN FETCH p.insurance " +
@@ -23,8 +25,28 @@ public interface PatientRepository extends JpaRepository<Patient, UUID> {
     )
     Optional<Patient> findByPatientId(@Param("id") UUID id);
 
-    @Query("SELECT p FROM Patient p LEFT JOIN FETCH p.insurance")
-    Page<Patient> findAllWithInsurance(Pageable pageable);
+    @Query(
+            value = """
+                    SELECT p FROM Patient p
+                    LEFT JOIN FETCH p.insurance
+                    WHERE :search IS NULL
+                       OR LOWER(CONCAT(p.firstName, ' ', p.lastName)) LIKE LOWER(CONCAT('%', :search, '%'))
+                       OR LOWER(p.firstName) LIKE LOWER(CONCAT('%', :search, '%'))
+                       OR LOWER(p.lastName) LIKE LOWER(CONCAT('%', :search, '%'))
+                       OR p.phone LIKE CONCAT('%', :search, '%')
+                       OR LOWER(COALESCE(p.email, '')) LIKE LOWER(CONCAT('%', :search, '%'))
+                    """,
+            countQuery = """
+                    SELECT COUNT(p) FROM Patient p
+                    WHERE :search IS NULL
+                       OR LOWER(CONCAT(p.firstName, ' ', p.lastName)) LIKE LOWER(CONCAT('%', :search, '%'))
+                       OR LOWER(p.firstName) LIKE LOWER(CONCAT('%', :search, '%'))
+                       OR LOWER(p.lastName) LIKE LOWER(CONCAT('%', :search, '%'))
+                       OR p.phone LIKE CONCAT('%', :search, '%')
+                       OR LOWER(COALESCE(p.email, '')) LIKE LOWER(CONCAT('%', :search, '%'))
+                    """
+    )
+    Page<Patient> searchAllWithInsurance(@Param("search") String search, Pageable pageable);
 
     @Query("SELECT p FROM Patient p LEFT JOIN FETCH p.emergencyContacts WHERE p.patientId IN :ids")
     List<Patient> findAllWithEmergencyContacts(@Param("ids") List<UUID> ids);
@@ -35,6 +57,20 @@ public interface PatientRepository extends JpaRepository<Patient, UUID> {
                 p.gender, p.phone, p.email, p.city, p.status
             )
             FROM Patient p
+            WHERE :search IS NULL
+               OR LOWER(CONCAT(p.firstName, ' ', p.lastName)) LIKE LOWER(CONCAT('%', :search, '%'))
+               OR LOWER(p.firstName) LIKE LOWER(CONCAT('%', :search, '%'))
+               OR LOWER(p.lastName) LIKE LOWER(CONCAT('%', :search, '%'))
+               OR p.phone LIKE CONCAT('%', :search, '%')
+               OR LOWER(COALESCE(p.email, '')) LIKE LOWER(CONCAT('%', :search, '%'))
             """)
-    Page<PatientSummaryResponse> findAllSummaries(Pageable pageable);
+    Page<PatientSummaryResponse> searchSummaries(@Param("search") String search, Pageable pageable);
+
+    @Query(
+            "SELECT p FROM Patient p " +
+            "LEFT JOIN FETCH p.insurance " +
+            "LEFT JOIN FETCH p.emergencyContacts " +
+            "WHERE p.userId = :userId"
+    )
+    Optional<Patient> findByUserId(@Param("userId") UUID userId);
 }

@@ -137,7 +137,7 @@ Current status:
 - Protected endpoints:
   - `/api/auth/logout`
   - `/api/auth/me`
-  - `/api/patients/**`
+  - `/api/v1/patients/**`
   - `/api/appointments/**`
   - `/api/departments/**`
   - `/api/doctors/**`
@@ -149,7 +149,7 @@ Current status:
 - Client-provided identity headers are stripped first to prevent spoofing.
 - Initial routes exist:
   - `/api/auth/** -> auth-service`
-  - `/api/patients/** -> patient-service`
+  - `/api/v1/patients/** -> patient-service`
   - `/api/appointments/**`, `/api/departments/**`, `/api/doctors/** -> appointment-service`
 
 Current routes:
@@ -167,7 +167,7 @@ spring:
         - id: patient-service
           uri: lb://patient-service
           predicates:
-            - Path=/api/patients/**
+            - Path=/api/v1/patients/**
 
         - id: appointment-service
           uri: lb://appointment-service
@@ -318,7 +318,8 @@ Current status:
 - MapStruct dependency and annotation processor added.
 - `lombok-mapstruct-binding` annotation processor added.
 - `spring-boot-starter-validation` added (Jakarta Bean Validation).
-- Package structure created: `controller`, `service`, `repository`, `entity`, `entity/enums`, `dto/request`, `dto/response/common`, `mapper`, `exception`, `config`.
+- `spring-boot-starter-security` added for downstream header-based authorization.
+- Package structure created: `controller`, `service`, `service/impl`, `repository`, `entity`, `entity/enums`, `dto/request`, `dto/response`, `mapper`, `exception`, `config`, `security`.
 
 Domain decisions (chốt ngày 2026-05-28):
 
@@ -354,9 +355,10 @@ entity/enums/BenefitRate.java       (RATE_80/RATE_95/RATE_100 + fromPercent)
 DTO request created:
 
 ```text
-dto/request/PatientRequest.java            (full Bean Validation, @Valid nested)
+dto/request/PatientRequest.java            (full Bean Validation, optional userId, @Valid nested)
 dto/request/EmergencyContactRequest.java   (VN phone pattern, size limits)
 dto/request/InsuranceRequest.java          (BHYT card pattern ^[A-Z]{2}[0-9]{13}$)
+dto/request/PatientUpdateRequest.java      (PATCH first slice)
 ```
 
 Common response wrapper created:
@@ -394,16 +396,58 @@ insurance                                 -> @Valid
 All string fields                         -> @Size(max = X) matching DB column length
 ```
 
-Next (afternoon session, planned order):
+Implemented application layer (2026-06-01):
 
 ```text
-1. dto/response/PatientResponse + InsuranceResponse + EmergencyContactResponse
-2. exception/ (BusinessException, PatientNotFoundException, ...)
-3. mapper/PatientMapper (MapStruct, entity <-> dto)
-4. service/PatientService (interface)
-5. service/impl/PatientServiceImpl (logic, validate max 2 contacts, etc.)
-6. exception/GlobalExceptionHandler (@RestControllerAdvice -> ApiResponse.error)
-7. controller/PatientController (POST/GET endpoints, returns ApiResponse<T>)
+dto/response/PatientResponse + InsuranceResponse + EmergencyContactResponse + PatientSummaryResponse + PageResponse
+exception/AppException + GlobalExceptionHandler
+mapper/PatientMapper
+service/PatientService + service/impl/PatientServiceImpl
+controller/PatientController
+security/HeaderAuthenticationFilter + AuthenticatedUser + SecurityConfig
+```
+
+Current patient-service API route:
+
+```text
+Base path: /api/v1/patients
+
+POST   /api/v1/patients
+GET    /api/v1/patients?search=&page=&size=
+GET    /api/v1/patients/summaries?search=&page=&size=
+GET    /api/v1/patients/me
+PATCH  /api/v1/patients/me
+GET    /api/v1/patients/{patientId}
+PATCH  /api/v1/patients/{patientId}
+DELETE /api/v1/patients/{patientId}
+```
+
+Downstream security status:
+
+```text
+api-gateway validates JWT.
+api-gateway sanitizes client-provided X-User-* headers.
+api-gateway forwards X-User-Id, X-User-Email, X-User-Roles.
+patient-service HeaderAuthenticationFilter converts those headers into Spring Security Authentication.
+GET/PATCH /me uses @AuthenticationPrincipal AuthenticatedUser and SELECT WHERE user_id = X-User-Id.
+```
+
+Role rules:
+
+```text
+ADMIN/RECEPTIONIST: create/update/delete patients.
+ADMIN/RECEPTIONIST/DOCTOR: read/search/summaries.
+Any authenticated role: GET/PATCH /me, but data is scoped by user_id.
+```
+
+Patient-service remaining debt before strict completion:
+
+```text
+1. Full gateway smoke test with real login tokens.
+2. Optional endpoint GET /api/v1/patients/{id}/summary if strict docs require it.
+3. Extend PATCH /me to update emergency contact and insurance.
+4. Convert gender/status from String to enums if needed.
+5. Add focused controller/service tests for authorization and search.
 ```
 
 Senior notes recorded during morning session:
@@ -730,7 +774,7 @@ Expected explicit routes:
 
 ```text
 /api/auth/**                                -> lb://auth-service
-/api/patients/**                            -> lb://patient-service
+/api/v1/patients/**                         -> lb://patient-service
 /api/appointments/**,/api/departments/**,
 /api/doctors/**                             -> lb://appointment-service
 ```
@@ -791,8 +835,8 @@ config
 First feature:
 
 ```text
-POST /api/patients
-GET  /api/patients/{id}
+POST /api/v1/patients
+GET  /api/v1/patients/{id}
 ```
 
 ### Step 5 - patient-service Liquibase first migration

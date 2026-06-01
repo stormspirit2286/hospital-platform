@@ -266,7 +266,8 @@ API:
 - `POST /patients`
 - `GET /patients/{id}`
 - `PATCH /patients/{id}`
-- `GET /patients/search?keyword=...`
+- `GET /patients?search=...`
+- `GET /patients/summaries?search=...`
 - `GET /patients/me`
 - `PATCH /patients/me`
 - `GET /patients/{id}/summary`
@@ -929,4 +930,3 @@ Sau khi appointment được tạo, service publish Kafka event.
 Notification, reporting và các service khác consume event theo kiểu idempotent bằng event_id,
 có retry/DLQ, và em dùng correlation id để trace request từ gateway tới Kafka consumer.
 ```
-
