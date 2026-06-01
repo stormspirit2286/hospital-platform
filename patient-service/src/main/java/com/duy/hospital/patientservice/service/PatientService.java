@@ -1,6 +1,7 @@
 package com.duy.hospital.patientservice.service;
 
 import com.duy.hospital.patientservice.dto.request.PatientRequest;
+import com.duy.hospital.patientservice.dto.request.PatientUpdateRequest;
 import com.duy.hospital.patientservice.dto.response.PageResponse;
 import com.duy.hospital.patientservice.dto.response.PatientResponse;
 import com.duy.hospital.patientservice.dto.response.PatientSummaryResponse;
@@ -14,6 +15,6 @@ public interface PatientService {
     PageResponse<PatientResponse> getPatients(Pageable pageable);
     PageResponse<PatientSummaryResponse> getPatientSummaries(Pageable pageable);
     PatientResponse getPatientById(UUID patientId);
-    PatientResponse updatePatient(UUID patientId, PatientRequest patient);
+    PatientResponse updatePatient(UUID patientId, PatientUpdateRequest request);
     void deletePatient(UUID patientId);
 }

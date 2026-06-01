@@ -1,6 +1,7 @@
 package com.duy.hospital.patientservice.controller;
 
 import com.duy.hospital.patientservice.dto.request.PatientRequest;
+import com.duy.hospital.patientservice.dto.request.PatientUpdateRequest;
 import com.duy.hospital.patientservice.dto.response.*;
 import com.duy.hospital.patientservice.service.PatientService;
 import jakarta.validation.Valid;
@@ -47,10 +48,10 @@ public class PatientController {
         return ResponseEntity.ok(ApiResponse.of(ResponseCode.SUCCESS, patient));
     }
 
-    @PutMapping("/{patientId}")
+    @PatchMapping("/{patientId}")
     public ResponseEntity<ApiResponse<PatientResponse>> updatePatient(
             @PathVariable UUID patientId,
-            @Valid @RequestBody PatientRequest request) {
+            @Valid @RequestBody PatientUpdateRequest request) {
         PatientResponse updated = patientService.updatePatient(patientId, request);
         return ResponseEntity.ok(ApiResponse.of(ResponseCode.SUCCESS, updated));
     }
@@ -58,6 +59,6 @@ public class PatientController {
     @DeleteMapping("/{patientId}")
     public ResponseEntity<ApiResponse<Void>> deletePatient(@PathVariable UUID patientId) {
         patientService.deletePatient(patientId);
-        return ResponseEntity.ok(ApiResponse.of(ResponseCode.NO_CONTENT, null));
+        return ResponseEntity.noContent().build();
     }
 }

@@ -3,6 +3,7 @@ package com.duy.hospital.patientservice.mapper;
 import com.duy.hospital.patientservice.dto.request.EmergencyContactRequest;
 import com.duy.hospital.patientservice.dto.request.InsuranceRequest;
 import com.duy.hospital.patientservice.dto.request.PatientRequest;
+import com.duy.hospital.patientservice.dto.request.PatientUpdateRequest;
 import com.duy.hospital.patientservice.dto.response.EmergencyContactResponse;
 import com.duy.hospital.patientservice.dto.response.InsuranceResponse;
 import com.duy.hospital.patientservice.dto.response.PatientResponse;
@@ -10,9 +11,7 @@ import com.duy.hospital.patientservice.dto.response.PatientSummaryResponse;
 import com.duy.hospital.patientservice.entity.EmergencyContact;
 import com.duy.hospital.patientservice.entity.Patient;
 import com.duy.hospital.patientservice.entity.PatientInsurance;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
 @Mapper(
         componentModel = "spring",
@@ -43,4 +42,11 @@ public interface PatientMapper {
     @Mapping(target = "patient", ignore = true)
     EmergencyContact toEntity(EmergencyContactRequest request);
 
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "patientId", ignore = true)
+    @Mapping(target = "userId", ignore = true)
+    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "insurance", ignore = true)
+    @Mapping(target = "emergencyContacts", ignore = true)
+    void updateEntity(PatientUpdateRequest request, @MappingTarget Patient patient);
 }

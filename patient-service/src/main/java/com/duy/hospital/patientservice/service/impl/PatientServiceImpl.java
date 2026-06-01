@@ -1,6 +1,7 @@
 package com.duy.hospital.patientservice.service.impl;
 
 import com.duy.hospital.patientservice.dto.request.PatientRequest;
+import com.duy.hospital.patientservice.dto.request.PatientUpdateRequest;
 import com.duy.hospital.patientservice.dto.response.PageResponse;
 import com.duy.hospital.patientservice.dto.response.PatientResponse;
 import com.duy.hospital.patientservice.dto.response.PatientSummaryResponse;
@@ -36,7 +37,7 @@ public class PatientServiceImpl implements PatientService {
     @Override
     @Transactional
     public PatientResponse createPatient(PatientRequest patientRequest) {
-        log.info("creating new Patient - {}", patientRequest.getFirstName() + " " + patientRequest.getLastName());
+        log.info("creating new Patient - {} {}", patientRequest.getFirstName(), patientRequest.getLastName());
         Patient patient = patientMapper.toEntity(patientRequest);
         if (patientRequest.getInsurance() != null) {
             PatientInsurance patientInsurance = patientMapper.toEntity(patientRequest.getInsurance());
@@ -106,12 +107,20 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public PatientResponse updatePatient(UUID patientId, PatientRequest patient) {
-        return null;
+    @Transactional
+    public PatientResponse updatePatient(UUID patientId, PatientUpdateRequest request) {
+        Patient patient = patientRepository.findByPatientId(patientId)
+                .orElseThrow(() -> new AppException(ResponseCode.PATIENT_NOT_FOUND));
+        patientMapper.updateEntity(request, patient);
+        return patientMapper.toResponse(patient);
     }
 
     @Override
+    @Transactional
     public void deletePatient(UUID patientId) {
-
+        if (!patientRepository.existsById(patientId)) {
+            throw new AppException(ResponseCode.PATIENT_NOT_FOUND);
+        }
+        patientRepository.deleteById(patientId);
     }
 }
