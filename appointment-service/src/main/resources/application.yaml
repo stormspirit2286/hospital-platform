@@ -6,6 +6,19 @@ spring:
     name: appointment-service
   config:
     import: "optional:configserver:http://localhost:8888"
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hospital_appointment
+    username: hospital
+    password: hospital123
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
 
 eureka:
   client:
