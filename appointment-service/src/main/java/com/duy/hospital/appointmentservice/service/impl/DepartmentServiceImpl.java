@@ -1,6 +1,7 @@
 package com.duy.hospital.appointmentservice.service.impl;
 
 import com.duy.hospital.appointmentservice.dto.request.DepartmentRequest;
+import com.duy.hospital.appointmentservice.dto.request.UpdateDepartmentRequest;
 import com.duy.hospital.appointmentservice.dto.response.DepartmentResponse;
 import com.duy.hospital.appointmentservice.dto.response.ResponseCode;
 import com.duy.hospital.appointmentservice.entity.Department;
@@ -33,23 +34,41 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public DepartmentResponse updateDepartment(UUID departmentId, DepartmentRequest request) {
-
-        return null;
+    @Transactional
+    public DepartmentResponse updateDepartment(UUID departmentId, UpdateDepartmentRequest request) {
+        Department department = departmentRepository
+                                .getDepartmentById(departmentId)
+                                .orElseThrow(() -> new AppException(ResponseCode.DEPARTMENT_NOT_FOUND));
+        if (departmentRepository.existsByNameAndDepartmentIdNot(request.getName(), departmentId)) {
+            throw new AppException(ResponseCode.DUPLICATE_DEPARTMENT_NAME);
+        }
+        department.setName(request.getName());
+        department.setDescription(request.getDescription());
+        department.setStatus(request.getStatus());
+        return departmentMapper.toResponse(departmentRepository.save(department));
     }
 
     @Override
+    @Transactional
     public void deleteDepartment(UUID departmentId) {
-
+        Department department = departmentRepository.findById(departmentId)
+                .orElseThrow(() -> new AppException(ResponseCode.DEPARTMENT_NOT_FOUND));
+        departmentRepository.delete(department);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public DepartmentResponse getDepartmentById(UUID departmentId) {
-        return null;
+        return departmentRepository.findById(departmentId)
+                .map(departmentMapper::toResponse)
+                .orElseThrow(() -> new AppException(ResponseCode.DEPARTMENT_NOT_FOUND));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<DepartmentResponse> getAllDepartments() {
-        return List.of();
+        return departmentRepository.findAll().stream()
+                .map(departmentMapper::toResponse)
+                .toList();
     }
 }
